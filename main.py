@@ -7,9 +7,8 @@ class Main:
             options = Parser.get_options()
             if options.get("map") is None:
                 raise ParserError("No map file found!")
-            with open(str(options.get("map"))) as file:
-                pass
-            print(Parser.get_options())
+            map_parts = Parser.parse_map_file(str(options.get("map")))
+            print(map_parts)
         except Exception as e:
             print(e)
 

@@ -14,9 +14,9 @@ class Zone:
         name: str,
         x: int,
         y: int,
-        zone_type: ZoneType,
-        color: str,
-        drone_cap: int,
+        zone_type: ZoneType = ZoneType.NORMAL,
+        color: str = "grey",
+        drone_cap: int = 1,
     ) -> None:
         self.name = name
         self.x = x
@@ -58,33 +58,43 @@ class Graph:
         self.links: dict[str, list[str]] = {}
         self.start_node: Zone | None = None
         self.end_node: Zone | None = None
-    
+
     def add_zone(self, zone: Zone) -> None:
         if self.nodes.get(zone.name) is not None:
             raise ValueError(f"Zone {zone.name} already exists!")
         self.nodes[zone.name] = zone
         self.links[zone.name] = list()
-    
+
     def add_connection(self, connection: Connection) -> None:
         if connection in self.connections.values():
-            raise ValueError(f"Connection between {connection.zone_1} and " +
-                             f"{connection.zone_2} already exists!")
-        if connection.zone_1 not in self.nodes \
-            or connection.zone_2 not in self.nodes:
+            raise ValueError(
+                f"Connection between {connection.zone_1} and "
+                + f"{connection.zone_2} already exists!"
+            )
+        if (
+            connection.zone_1 not in self.nodes
+            or connection.zone_2 not in self.nodes
+        ):
             raise ValueError("Both zones need to exist for a valid connection")
         self.connections[(connection.zone_1, connection.zone_2)] = connection
         self.connections[(connection.zone_2, connection.zone_1)] = connection
         self.links[connection.zone_1].append(connection.zone_2)
         self.links[connection.zone_2].append(connection.zone_1)
-    
+
+    def set_start(self, zone: Zone) -> None:
+        self.start_node = zone
+
+    def set_end(self, zone: Zone) -> None:
+        self.end_node = zone
+
     def get_links(self, zone: str) -> list | None:
         return self.links.get(zone)
-    
+
     def get_zone(self, name: str) -> Zone | None:
         return self.nodes.get(name)
-    
+
     def get_connection(self, zone_1: str, zone_2: str) -> Connection | None:
         return self.connections.get((zone_1, zone_2))
-    
+
     def get_all_zones(self) -> list:
         return list(self.nodes.values())

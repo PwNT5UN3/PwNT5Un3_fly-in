@@ -1,1 +1,1 @@
-print(int(1 == 1))
+print(" 1".split()[1] == None)
