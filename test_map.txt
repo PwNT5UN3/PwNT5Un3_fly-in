@@ -11,7 +11,6 @@ start_hub: start 0 0 [color=green max_drones=25]
 # Single-file entry gates (extreme bottleneck)
 hub: gate_hell1 1 0 [color=red max_drones=1]
 hub: gate_hell2 2 0 [color=red max_drones=1]
-hub: gate_hell3 3 0 [color=red max_drones=1]
 hub: gate_hell4 4 0 [color=red max_drones=1]
 hub: gate_hell5 5 0 [color=red max_drones=1]
 
@@ -45,7 +44,7 @@ hub: overflow_hell2 7 1 [zone=restricted color=maroon max_drones=2]
 hub: overflow_hell3 8 1 [zone=restricted color=maroon max_drones=2]
 hub: overflow_hell4 6 -1 [zone=restricted color=maroon max_drones=2]
 hub: overflow_hell5 7 -1 [zone=restricted color=maroon max_drones=2]
-hub: overflow_hell6 8 -1 [zone=restricted color=maroon max_drones=2]
+hub: overflow_hell6 8 -1
 
 # === LAYER 3: The False Hope Section ===
 # Priority zones that lead to more traps

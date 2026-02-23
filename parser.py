@@ -1,5 +1,5 @@
 import sys
-from graph import Zone, ZoneType
+from graph import Zone, ZoneType, Connection
 
 
 class ParserError(Exception):
@@ -26,6 +26,40 @@ class Parser:
         return options
 
     @staticmethod
+    def parse_link(line: str) -> Connection:
+        data = line.split("[")
+        hard_data = data[0].split(" ")
+        if len(hard_data) != 3 and len(hard_data) != 2:
+            raise ParserError(f"{line} is not a valid link declaration!1")
+        linked_hubs = hard_data[1].split("-", maxsplit=1)
+        if len(linked_hubs) != 2:
+            raise ParserError(f"{line} is not a valid link declaration!")
+        if len(data) >= 2:
+            metadata = data[1].split("]")[0].split(" ")
+        else:
+            metadata = []
+        cap = ""
+        for data_point in metadata:
+            params = data_point.split("=")
+            if len(params) == 1:
+                raise ParserError(f"{data_point} is not valid metadata!")
+            elif params[1] == "":
+                raise ParserError(f"{data_point} is not valid metadata!")
+            elif params[0] == "max_link_capacity" and cap == "":
+                cap = params[1]
+            elif params[0] == "max_link_capacity":
+                raise ParserError("Do not redefine datapoints!")
+            else:
+                raise ParserError(f"{params[0]} is not a valid metadata point")
+        if cap == "":
+            cap_int = 1
+        else:
+            cap_int = int(cap)
+            if cap_int <= 0:
+                raise ParserError("capacity cannot be less than one")
+        return Connection(linked_hubs[0], linked_hubs[1], cap_int)
+
+    @staticmethod
     def parse_zone(line: str, drone_num: int) -> Zone:
         data = line.split("[")
         hard_data = data[0].split(" ")
@@ -34,13 +68,15 @@ class Parser:
         name = hard_data[1]
         x = int(hard_data[2])
         y = int(hard_data[3])
-        metadata = data[1].split("]")[0].split(" ")
+        if len(data) >= 2:
+            metadata = data[1].split("]")[0].split(" ")
+        else:
+            metadata = []
         color = ""
         zone = ""
         cap = ""
         for data_point in metadata:
             params = data_point.split("=")
-            print(params)
             if len(params) == 1:
                 raise ParserError(f"{data_point} is not valid metadata!")
             elif params[1] == "":
@@ -74,12 +110,25 @@ class Parser:
                 cap_int = drone_num
             else:
                 cap_int = 1
+        else:
+            cap_int = int(cap)
+            if cap_int <= 0:
+                raise ParserError("capacity cannot be less than one")
+            if hard_data[0] == "start_hub:" or hard_data[0] == "end_hub:":
+                if cap_int != drone_num:
+                    raise ParserError(
+                        "capacity on the start end end must be equal"
+                        + " to the total drone number"
+                    )
+        return Zone(name, x, y, zonetype, color, cap_int)
 
     @staticmethod
     def parse_map_file(map_file: str) -> dict:
         drone_map: dict[str, list] = {}
         drone_map["nodes"] = []
         drone_map["links"] = []
+        drone_map["start"] = []
+        drone_map["end"] = []
         with open(map_file) as file:
             for line in file:
                 if line.startswith("#") or line.strip() == "":
@@ -93,7 +142,7 @@ class Parser:
                     drone_map["drone_num"] = [int(line.strip().split(" ")[1])]
                 elif (
                     line.startswith("start_hub:")
-                    and drone_map.get("start") is None
+                    and drone_map.get("start") == []
                     and len(drone_map["drone_num"]) == 1
                 ):
                     zone = Parser.parse_zone(
@@ -103,7 +152,7 @@ class Parser:
                     drone_map["nodes"].append(zone)
                 elif (
                     line.startswith("end_hub:")
-                    and drone_map.get("end") is None
+                    and drone_map.get("end") == []
                     and len(drone_map["drone_num"]) == 1
                 ):
                     zone = Parser.parse_zone(
@@ -118,8 +167,13 @@ class Parser:
                     drone_map["nodes"].append(
                         Parser.parse_zone(
                             line.strip(), drone_map["drone_num"][0]
-                        ),
+                        )
                     )
+                elif (
+                    line.startswith("connection:")
+                    and len(drone_map["drone_num"]) == 1
+                ):
+                    drone_map["links"].append(Parser.parse_link(line.strip()))
                 else:
                     raise ParserError(f"{line.strip()} is not a valid line!")
         return drone_map

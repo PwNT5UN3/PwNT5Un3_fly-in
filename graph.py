@@ -1,4 +1,5 @@
 import enum
+from dataclasses import dataclass
 
 
 class ZoneType(str, enum.Enum):
@@ -6,6 +7,14 @@ class ZoneType(str, enum.Enum):
     PRIO = "priority"
     BLOCKED = "blocked"
     RESTRICTED = "restricted"
+
+
+@dataclass
+class drone:
+    current_zone: str
+    path: list = []
+    found_target: bool = False
+    has_waited: bool = False
 
 
 class Zone:
@@ -82,10 +91,16 @@ class Graph:
         self.links[connection.zone_2].append(connection.zone_1)
 
     def set_start(self, zone: Zone) -> None:
-        self.start_node = zone
+        if zone in self.nodes.values():
+            self.start_node = zone
+        else:
+            raise ValueError("start node must exist first")
 
     def set_end(self, zone: Zone) -> None:
-        self.end_node = zone
+        if zone in self.nodes.values():
+            self.end_node = zone
+        else:
+            raise ValueError("end node must exist first")
 
     def get_links(self, zone: str) -> list | None:
         return self.links.get(zone)
