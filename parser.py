@@ -123,7 +123,7 @@ class Parser:
         return Zone(name, x, y, zonetype, color, cap_int)
 
     @staticmethod
-    def parse_map_file(map_file: str) -> dict:
+    def parse_map_file(map_file: str) -> dict[str, list]:
         drone_map: dict[str, list] = {}
         drone_map["nodes"] = []
         drone_map["links"] = []

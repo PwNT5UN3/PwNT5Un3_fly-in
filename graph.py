@@ -10,9 +10,10 @@ class ZoneType(str, enum.Enum):
 
 
 @dataclass
-class drone:
+class Drone:
+    drone_id: str
     current_zone: str
-    path: list = []
+    path: list[str]
     found_target: bool = False
     has_waited: bool = False
 
@@ -33,6 +34,7 @@ class Zone:
         self.type = zone_type
         self.color = color
         self.drone_cap = drone_cap
+        self.current_drone_count = 0
 
     def get_zone_cost(self) -> float:
         if self.type == ZoneType.BLOCKED:
@@ -43,7 +45,10 @@ class Zone:
             return 1 - (int(self.type == ZoneType.PRIO) / 100)
 
     def is_blocked(self) -> bool:
-        return self.type == ZoneType.RESTRICTED
+        return self.type == ZoneType.BLOCKED
+
+    def is_not_available(self):
+        return self.is_blocked() or self.current_drone_count == self.drone_cap
 
 
 class Connection:
@@ -55,9 +60,13 @@ class Connection:
         self.zone_1 = zone_1
         self.zone_2 = zone_2
         self.cap = capacity
+        self.used_this_turn = 0
 
     def get_linked_zones(self) -> tuple[str, str]:
         return (self.zone_1, self.zone_2)
+
+    def is_not_available(self):
+        return self.cap == self.used_this_turn
 
 
 class Graph:
@@ -102,14 +111,23 @@ class Graph:
         else:
             raise ValueError("end node must exist first")
 
-    def get_links(self, zone: str) -> list | None:
-        return self.links.get(zone)
+    def get_links(self, zone: str) -> list:
+        links = self.links.get(zone)
+        if links is None:
+            raise ValueError("zone must exist for links")
+        return links
 
-    def get_zone(self, name: str) -> Zone | None:
-        return self.nodes.get(name)
+    def get_zone(self, name: str) -> Zone:
+        zone = self.nodes.get(name)
+        if zone is None:
+            raise ValueError("zone must exist")
+        return zone
 
-    def get_connection(self, zone_1: str, zone_2: str) -> Connection | None:
-        return self.connections.get((zone_1, zone_2))
+    def get_connection(self, zone_1: str, zone_2: str) -> Connection:
+        link = self.connections.get((zone_1, zone_2))
+        if link is None:
+            raise ValueError("link must exist")
+        return link
 
     def get_all_zones(self) -> list:
         return list(self.nodes.values())
