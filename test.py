@@ -1,1 +1,2 @@
-print(float(1 == 1))
+for i in "1234":
+    print(i)

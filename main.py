@@ -1,6 +1,7 @@
 from parser import Parser, ParserError
 from graph import Graph, Drone
 from pathfind import Pathfinder
+from visualizer import Visualizer
 
 
 class Main:
@@ -52,11 +53,12 @@ class Main:
                 for drone in drones:
                     Pathfinder.move_to_next_tile(drone, network)
                 network.reset_links()
-                # return
-            for drone in drones:
-                print(len(drone.path))
-                pass
-            # print(len(drones[::-1][0].path))
+            Visualizer.print_movement_logs(
+                drones, network, options.get("vis", False)
+            )
+            if options.get("vis", False):
+                gui = Visualizer()
+                gui.run_gui()
         except Exception as e:
             print(e)
 
