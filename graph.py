@@ -53,8 +53,6 @@ class Zone:
 
 class Connection:
     def __init__(self, zone_1: str, zone_2: str, capacity: int = 1) -> None:
-        if capacity <= 0:
-            raise ValueError("Warning: link capacity cannot be less than 1")
         if zone_1 == zone_2:
             raise ValueError("Zones cannot be identical")
         self.zone_1 = zone_1
@@ -131,3 +129,7 @@ class Graph:
 
     def get_all_zones(self) -> list:
         return list(self.nodes.values())
+
+    def reset_links(self) -> None:
+        for link in self.connections.values():
+            link.used_this_turn = 0

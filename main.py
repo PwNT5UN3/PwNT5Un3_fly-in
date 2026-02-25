@@ -32,6 +32,12 @@ class Main:
             num = map_parts.get("drone_num")
             if num is None:
                 raise ValueError("number of drones must be specified!")
+            scout = Drone(
+                "D_SCOUT",
+                network.start_node.name,
+                [network.start_node.name],
+            )
+            Pathfinder.get_best_next_tile(scout, network)
             drones = []
             for i in range(list(num)[0]):
                 drones.append(
@@ -45,8 +51,12 @@ class Main:
             while not Main.finished(drones):
                 for drone in drones:
                     Pathfinder.move_to_next_tile(drone, network)
+                network.reset_links()
                 # return
-            print(drones[::-1][0].path)
+            for drone in drones:
+                print(len(drone.path))
+                pass
+            # print(len(drones[::-1][0].path))
         except Exception as e:
             print(e)
 

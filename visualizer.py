@@ -1,14 +1,23 @@
 import os
 
+from graph import Graph, Drone
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
+
 
 class Visualizer:
     def __init__(self) -> None:
         pygame.init()
         self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
-    
+
+    @staticmethod
+    def print_movement_logs(
+        drones: list[Drone], network: Graph, coloured: bool
+    ):
+        pass
+
     def run_gui(self) -> None:
         running = True
         while running:
@@ -20,7 +29,8 @@ class Visualizer:
             pygame.display.flip()
             self.clock.tick(60)
         pygame.quit()
-    
+
+
 if __name__ == "__main__":
     gui = Visualizer()
     gui.run_gui()

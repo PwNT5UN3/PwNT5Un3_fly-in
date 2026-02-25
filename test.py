@@ -1,1 +1,1 @@
-print(" 1".split()[1] == None)
+print(float(1 == 1))
