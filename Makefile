@@ -20,7 +20,8 @@ install:
 	fi; \
 	. ./.venv/bin/activate; \
 	uv pip install rich; \
-	uv pip install pygame;
+	uv pip install pygame; \
+	uv pip install mypy;
 
 run:
 	@echo $(ARGS)

@@ -175,9 +175,14 @@ class Visualizer:
                     rainbow_smooth.clear()
                     for num in rainbow:
                         rainbow_smooth.append(num.__floor__())
+                    rainbow_tuple: tuple[int, int, int] = (
+                        rainbow_smooth[0],
+                        rainbow_smooth[1],
+                        rainbow_smooth[2],
+                    )
                     pygame.draw.circle(
                         self.screen,
-                        tuple(rainbow_smooth),
+                        rainbow_tuple,
                         (zone.x, zone.y),
                         16,
                     )
