@@ -58,7 +58,7 @@ class Main:
             )
             if options.get("vis", False):
                 gui = Visualizer()
-                gui.run_gui()
+                gui.run_gui(drones, network)
         except Exception as e:
             print(e)
 

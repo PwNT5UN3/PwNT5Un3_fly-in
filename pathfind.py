@@ -90,10 +90,20 @@ class Pathfinder:
                 drone.current_zone, next_node
             ).used_this_turn += 1
         network.get_zone(drone.current_zone).current_drone_count -= 1
+        if drone.current_zone != next_node:
+            link = network.get_connection(drone.current_zone, next_node).name
+        else:
+            link = ""
         drone.current_zone = next_node
         if network.end_node is None:
             raise ValueError("something unexpected happened")
         if drone.current_zone == network.end_node.name:
             drone.found_target = True
         network.get_zone(drone.current_zone).current_drone_count += 1
-        drone.path.append(drone.current_zone)
+        if (
+            network.get_zone(drone.current_zone).type != ZoneType.RESTRICTED
+            or link == ""
+        ):
+            drone.path.append(drone.current_zone)
+        else:
+            drone.path.append(link)

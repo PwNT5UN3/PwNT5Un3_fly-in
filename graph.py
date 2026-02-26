@@ -52,12 +52,15 @@ class Zone:
 
 
 class Connection:
-    def __init__(self, zone_1: str, zone_2: str, capacity: int = 1) -> None:
+    def __init__(
+        self, name: str, zone_1: str, zone_2: str, capacity: int = 1
+    ) -> None:
         if zone_1 == zone_2:
             raise ValueError("Zones cannot be identical")
         self.zone_1 = zone_1
         self.zone_2 = zone_2
         self.cap = capacity
+        self.name = name
         self.used_this_turn = 0
 
     def get_linked_zones(self) -> tuple[str, str]:
@@ -129,6 +132,9 @@ class Graph:
 
     def get_all_zones(self) -> list:
         return list(self.nodes.values())
+
+    def get_all_links(self) -> list:
+        return list(self.connections.values())
 
     def reset_links(self) -> None:
         for link in self.connections.values():

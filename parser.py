@@ -57,7 +57,9 @@ class Parser:
             cap_int = int(cap)
             if cap_int <= 0:
                 raise ParserError("capacity cannot be less than one")
-        return Connection(linked_hubs[0], linked_hubs[1], cap_int)
+        return Connection(
+            hard_data[1], linked_hubs[0], linked_hubs[1], cap_int
+        )
 
     @staticmethod
     def parse_zone(line: str, drone_num: int) -> Zone:
