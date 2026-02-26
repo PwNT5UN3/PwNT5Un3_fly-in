@@ -56,6 +56,7 @@ class Visualizer:
         "crimson": (220, 20, 60),
         "violet": (175, 0, 215),
         "bg": (30, 30, 30),
+        "drone": (167, 166, 186),
     }
 
     def __init__(self) -> None:
@@ -147,11 +148,11 @@ class Visualizer:
                     elif event.key == pygame.K_r:
                         turn = 0
                     elif (
-                        event.key == pygame.K_LEFT
+                        event.key == pygame.K_RIGHT
                         and turn < len(drones[0].path) - 1
                     ):
                         turn += 1
-                    elif event.key == pygame.K_RIGHT and turn > 0:
+                    elif event.key == pygame.K_LEFT and turn > 0:
                         turn -= 1
             turn_text = f"Positions after turn: {turn}"
             turn_sign = font.render(turn_text, True, (255, 255, 255))
@@ -217,7 +218,7 @@ class Visualizer:
                 )
                 self.screen.blit(text_surface, (zone.x - 7, zone.y - 8))
             for connection in network.get_all_links():
-                pygame.draw.line(
+                pygame.draw.aaline(
                     self.screen,
                     (100, 100, 100),
                     (
@@ -229,6 +230,65 @@ class Visualizer:
                         network.get_zone(connection.zone_2).y,
                     ),
                 )
+            for drone in drones:
+                if "-" in drone.path[turn]:
+                    lower_pos_x = min(
+                        [
+                            network.get_zone(drone.path[turn].split("-")[1]).x,
+                            network.get_zone(drone.path[turn].split("-")[0]).x,
+                        ]
+                    )
+                    lower_pos_y = min(
+                        [
+                            network.get_zone(drone.path[turn].split("-")[1]).y,
+                            network.get_zone(drone.path[turn].split("-")[0]).y,
+                        ]
+                    )
+                    pygame.draw.circle(
+                        self.screen,
+                        self.colors_rgb["drone"],
+                        (
+                            int(
+                                abs(
+                                    (
+                                        network.get_zone(
+                                            drone.path[turn].split("-")[1]
+                                        ).x
+                                        - network.get_zone(
+                                            drone.path[turn].split("-")[0]
+                                        ).x
+                                    )
+                                )
+                                / 2
+                            )
+                            + lower_pos_x,
+                            int(
+                                abs(
+                                    (
+                                        network.get_zone(
+                                            drone.path[turn].split("-")[1]
+                                        ).y
+                                        - network.get_zone(
+                                            drone.path[turn].split("-")[0]
+                                        ).y
+                                    )
+                                )
+                                / 2
+                            )
+                            + lower_pos_y,
+                        ),
+                        5,
+                    )
+                else:
+                    pygame.draw.circle(
+                        self.screen,
+                        self.colors_rgb["drone"],
+                        (
+                            network.get_zone(drone.path[turn]).x,
+                            network.get_zone(drone.path[turn]).y,
+                        ),
+                        5,
+                    )
             pygame.display.flip()
             pygame.event.pump()
         pygame.quit()

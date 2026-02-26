@@ -20,6 +20,7 @@ class Pathfinder:
                 or network.get_connection(
                     drone.current_zone, node
                 ).is_not_available()
+                + network.get_zone(node).current_drone_count / 100
             )
             parents[node] = drone.current_zone
         if network.end_node is None:
@@ -38,15 +39,6 @@ class Pathfinder:
                 cost: float = (
                     costs.get(examined, 0)
                     + network.get_zone(node).get_zone_cost()
-                    + int(
-                        network.get_zone(node).drone_cap
-                        == network.get_zone(node).current_drone_count
-                    )
-                    + int(
-                        network.get_connection(
-                            examined, node
-                        ).is_not_available()
-                    )
                 )
                 if node in open_list:
                     if costs.get(node, float("inf")) > cost:
