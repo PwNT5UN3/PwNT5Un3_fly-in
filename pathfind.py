@@ -2,8 +2,14 @@ from graph import ZoneType, Drone, Graph
 
 
 class Pathfinder:
+    """The pathfinder for the drones"""
+
     @staticmethod
     def get_best_next_tile(drone: Drone, network: Graph) -> str:
+        """
+        finds he best path from the current zone to the goal
+        using Djikstras algorithm
+        """
         open_list: list[str] = []
         closed_list: list[str] = []
         costs: dict[str, float] = {}
@@ -58,6 +64,7 @@ class Pathfinder:
 
     @staticmethod
     def move_to_next_tile(drone: Drone, network: Graph) -> None:
+        """Appends the next tile in the chosen path to the drone cache"""
         if drone.found_target:
             drone.path.append(drone.current_zone)
             return

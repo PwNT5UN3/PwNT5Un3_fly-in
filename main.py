@@ -5,8 +5,11 @@ from visualizer import Visualizer
 
 
 class Main:
+    """The main wrapper for the program"""
+
     @staticmethod
     def finished(drones: list[Drone]) -> bool:
+        """A check if all drones have reached the goal"""
         for drone in drones:
             if not drone.found_target:
                 return False
@@ -14,6 +17,7 @@ class Main:
 
     @staticmethod
     def main() -> None:
+        """the main function running parser, pathfinder and visualiser"""
         try:
             options = Parser.get_options()
             if options.get("map") is None:

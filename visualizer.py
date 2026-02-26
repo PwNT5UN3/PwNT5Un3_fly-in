@@ -9,6 +9,7 @@ import pygame  # noqa: E402
 
 
 class Visualizer:
+    """The visual aspects (gui and log prints)"""
 
     colors: dict[str, str] = {
         "green": "bright_green",
@@ -60,13 +61,15 @@ class Visualizer:
     }
 
     def __init__(self) -> None:
+        """Inits the gui aspects like the pygame display"""
         pygame.init()
         self.x_len = 1600
         self.y_len = 900
         self.screen = pygame.display.set_mode((self.x_len, self.y_len))
         self.clock = pygame.time.Clock()
 
-    def buffer_zone_positions(self, network: Graph):
+    def buffer_zone_positions(self, network: Graph) -> None:
+        """readjusts all zone coordinates to fit evenly on the screen"""
         all_x_pos = list(
             enumerate(sorted(set(map(lambda x: x.x, network.get_all_zones()))))
         )
@@ -87,6 +90,7 @@ class Visualizer:
 
     @classmethod
     def print_coloured(cls, drone_id: str, network: Graph, node: str) -> None:
+        """prints a log in color"""
         console = Console()
         console.print(drone_id, "-", sep="", end="")
         zone = Text()
@@ -109,7 +113,11 @@ class Visualizer:
     @staticmethod
     def print_movement_logs(
         drones: list[Drone], network: Graph, coloured: bool
-    ):
+    ) -> None:
+        """
+        prints the movement logs,
+        uses print_coloured() if couloured is set to True
+        """
         steps = len(drones[0].path) - 1
         for step in range(steps):
             for drone in drones:
@@ -125,10 +133,14 @@ class Visualizer:
 
     @staticmethod
     def avg_rgb_bigger_than_80(rgb: tuple[int, int, int]) -> bool:
+        """
+        returns True if the aberage of the rgb values given is bigger than 80
+        """
         avg = (rgb[0] + rgb[1] + rgb[2]) / 3
         return avg >= 80
 
     def run_gui(self, drones: list[Drone], network: Graph) -> None:
+        """runs the visual representation using pygame"""
         running = True
         rainbow = [255.0, 0.0, 0.0]
         rainbow_smooth = [0, 0, 0]

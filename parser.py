@@ -3,16 +3,23 @@ from graph import Zone, ZoneType, Connection
 
 
 class ParserError(Exception):
+    """Parser exception class"""
+
     def __init__(self, message: str) -> None:
+        """constructor"""
         super().__init__(message)
 
     def __str__(self) -> str:
+        """exception message"""
         return f"ParserError: {self.args[0]}"
 
 
 class Parser:
+    """the class for the parser"""
+
     @staticmethod
     def get_options() -> dict:
+        """gets all passed options"""
         options: dict[str, str | bool] = {}
         for arg in range(len(sys.argv)):
             if arg == 0:
@@ -27,6 +34,7 @@ class Parser:
 
     @staticmethod
     def parse_link(line: str) -> Connection:
+        """parses a line for a connection"""
         data = line.split("[")
         hard_data = data[0].split(" ")
         if len(hard_data) != 3 and len(hard_data) != 2:
@@ -63,6 +71,7 @@ class Parser:
 
     @staticmethod
     def parse_zone(line: str, drone_num: int) -> Zone:
+        """parses a line for a zone"""
         data = line.split("[")
         hard_data = data[0].split(" ")
         if len(hard_data) != 5 and len(hard_data) != 4:
@@ -126,6 +135,7 @@ class Parser:
 
     @staticmethod
     def parse_map_file(map_file: str) -> dict[str, list]:
+        """parses the map file using parse_link and parse_zone"""
         drone_map: dict[str, list] = {}
         drone_map["nodes"] = []
         drone_map["links"] = []
