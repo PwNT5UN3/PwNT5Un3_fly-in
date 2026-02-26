@@ -26,7 +26,7 @@ class Pathfinder:
                 or network.get_connection(
                     drone.current_zone, node
                 ).is_not_available()
-                + network.get_zone(node).current_drone_count / 100
+                + int(network.get_zone(node).current_drone_count != 0) / 100
             )
             parents[node] = drone.current_zone
         if network.end_node is None:

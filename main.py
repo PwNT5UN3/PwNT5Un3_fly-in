@@ -58,7 +58,7 @@ class Main:
                     Pathfinder.move_to_next_tile(drone, network)
                 network.reset_links()
             Visualizer.print_movement_logs(
-                drones, network, options.get("vis", False)
+                drones, network, bool(options.get("vis", False))
             )
             if options.get("vis", False):
                 gui = Visualizer()

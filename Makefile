@@ -46,7 +46,7 @@ clean:
 	find . -name "*.pyo" -delete
 
 lint:
-	uv run flake8 **/*.py
+	uv run flake8 *.py
 	uv run mypy . --warn-return-any \
 	--warn-unused-ignores \
 	--ignore-missing-imports \
@@ -54,5 +54,5 @@ lint:
 	--check-untyped-defs
 
 lint-strict: 
-	uv run flake8 **/*.py
+	uv run flake8 *.py
 	uv run mypy . --strict

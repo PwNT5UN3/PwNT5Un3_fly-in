@@ -1,5 +1,6 @@
 import sys
 from graph import Zone, ZoneType, Connection
+from typing import Any
 
 
 class ParserError(Exception):
@@ -18,7 +19,7 @@ class Parser:
     """the class for the parser"""
 
     @staticmethod
-    def get_options() -> dict:
+    def get_options() -> dict[str, str | bool]:
         """gets all passed options"""
         options: dict[str, str | bool] = {}
         for arg in range(len(sys.argv)):
@@ -134,9 +135,9 @@ class Parser:
         return Zone(name, x, y, zonetype, color, cap_int)
 
     @staticmethod
-    def parse_map_file(map_file: str) -> dict[str, list]:
+    def parse_map_file(map_file: str) -> dict[str, list[Any]]:
         """parses the map file using parse_link and parse_zone"""
-        drone_map: dict[str, list] = {}
+        drone_map: dict[str, list[Any]] = {}
         drone_map["nodes"] = []
         drone_map["links"] = []
         drone_map["start"] = []

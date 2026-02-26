@@ -137,7 +137,7 @@ class Graph:
         else:
             raise ValueError("end node must exist first")
 
-    def get_links(self, zone: str) -> list:
+    def get_links(self, zone: str) -> list[str]:
         """returns all links from a zone"""
         links = self.links.get(zone)
         if links is None:
@@ -158,11 +158,11 @@ class Graph:
             raise ValueError("link must exist")
         return link
 
-    def get_all_zones(self) -> list:
+    def get_all_zones(self) -> list[Zone]:
         """gets a list of all zones"""
         return list(self.nodes.values())
 
-    def get_all_links(self) -> list:
+    def get_all_links(self) -> list[Connection]:
         """gets a list of all connections"""
         return list(self.connections.values())
 
